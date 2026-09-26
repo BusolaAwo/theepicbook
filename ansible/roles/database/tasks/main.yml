@@ -1,4 +1,10 @@
 ---
+- name: Install PyMySQL on database server
+  apt:
+    name: python3-pymysql
+    state: present
+  become: yes
+
 - name: Create database if not exists
   mysql_db:
     login_host: "{{ mysql_fqdn }}"
