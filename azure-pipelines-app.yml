@@ -24,8 +24,8 @@ stages:
 
           - script: |
               python -m pip install --upgrade pip
-              pip install ansible azure-cli
-            displayName: 'Install Ansible and Azure CLI'
+              pip install ansible azure-cli PyMySQL
+            displayName: 'Install Ansible, Azure CLI, and PyMySQL'
 
           - task: DownloadSecureFile@1
             name: sshKey
