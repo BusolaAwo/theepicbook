@@ -44,5 +44,6 @@ stages:
           - script: |
               cd ansible
               export DB_PASSWORD="$(DB_PASSWORD)"
-              ansible-playbook -i inventory/hosts.ini site.yml --private-key=/home/vsts/.ssh/id_rsa
+              export MYSQL_ADMIN_PASSWORD="$(mysql_admin_password)"
+              ansible-playbook -i inventory/hosts.ini site.yml --private-key=/home/vsts/.ssh/id_rsa -e "mysql_admin_password=$(mysql_admin_password)"
             displayName: 'Run Ansible Playbook'
