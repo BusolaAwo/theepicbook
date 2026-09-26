@@ -1,0 +1,48 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: 'epicbook-secret-vars'
+
+stages:
+  - stage: Deploy
+    displayName: 'Run Ansible Deployment'
+    jobs:
+      - job: AnsibleDeploy
+        displayName: 'Execute Ansible site.yml'
+        steps:
+          - checkout: self
+            persistCredentials: true
+
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.x'
+            displayName: 'Set up Python version'
+
+          - script: |
+              python -m pip install --upgrade pip
+              pip install ansible azure-cli
+            displayName: 'Install Ansible and Azure CLI'
+
+          - task: DownloadSecureFile@1
+            name: sshKey
+            inputs:
+              secureFile: 'id_rsa'
+            displayName: 'Download SSH Private Key from Secure Files'
+
+          - script: |
+              mkdir -p /home/vsts/.ssh
+              cp $(sshKey.secureFilePath) /home/vsts/.ssh/id_rsa
+              chmod 600 /home/vsts/.ssh/id_rsa
+              echo -e "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null" > /home/vsts/.ssh/config
+              chmod 600 /home/vsts/.ssh/config
+            displayName: 'Configure SSH Permissions and Host Key Checking'
+
+          - script: |
+              cd ansible
+              export DB_PASSWORD="$(DB_PASSWORD)"
+              ansible-playbook -i inventory/hosts.ini site.yml --private-key=/home/vsts/.ssh/id_rsa
+            displayName: 'Run Ansible Playbook'

@@ -1,0 +1,58 @@
+---
+- name: Install Node.js 18.x repository
+  shell: curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+  args:
+    executable: /bin/bash
+
+- name: Install Node.js, npm, and MySQL client
+  apt:
+    name:
+      - nodejs
+      - default-mysql-client
+    state: present
+
+- name: Create application directory
+  file:
+    path: /var/www/epicbook
+    state: directory
+    owner: azureuser
+    group: azureuser
+    mode: '0755'
+
+- name: Copy application code to server
+  copy:
+    src: ../../../
+    dest: /var/www/epicbook/
+    owner: azureuser
+    group: azureuser
+
+- name: Install Node.js dependencies
+  npm:
+    path: /var/www/epicbook
+    production: yes
+  become_user: azureuser
+
+- name: Configure database settings JSON
+  template:
+    src: config.json.j2
+    dest: /var/www/epicbook/config/config.json
+    owner: azureuser
+    group: azureuser
+    mode: '0600'
+
+- name: Install PM2 process manager globally
+  npm:
+    name: pm2
+    global: yes
+
+- name: Start EpicBook application via PM2
+  command: pm2 start server.js --name "epicbook"
+  args:
+    chdir: /var/www/epicbook
+  become_user: azureuser
+  register: pm2_start
+  changed_when: "'[PM2]' in pm2_start.stdout"
+
+- name: Save PM2 process list and configure startup
+  command: pm2 startup systemd -u azureuser --hp /home/azureuser
+  become: yes

@@ -1,0 +1,36 @@
+---
+- name: Create database if not exists
+  mysql_db:
+    login_host: "{{ mysql_fqdn }}"
+    login_user: "{{ mysql_admin_username }}"
+    login_password: "{{ mysql_admin_password }}"
+    login_port: 3306
+    name: bookstore
+    state: present
+    ssl: yes
+  no_log: true
+
+- name: Check if schema tables are already imported
+  mysql_query:
+    login_host: "{{ mysql_fqdn }}"
+    login_user: "{{ mysql_admin_username }}"
+    login_password: "{{ mysql_admin_password }}"
+    login_port: 3306
+    login_db: bookstore
+    ssl: yes
+    query: "SHOW TABLES LIKE 'Books';"
+  register: table_check
+  no_log: true
+
+- name: Import database schema and seed data if tables don't exist
+  mysql_db:
+    login_host: "{{ mysql_fqdn }}"
+    login_user: "{{ mysql_admin_username }}"
+    login_password: "{{ mysql_admin_password }}"
+    login_port: 3306
+    name: bookstore
+    state: import
+    target: /var/www/epicbook/db/schema.sql
+    ssl: yes
+  when: table_check.rowcount == 0
+  no_log: true
