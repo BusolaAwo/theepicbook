@@ -7,7 +7,6 @@
     login_port: 3306
     name: bookstore
     state: present
-    ssl: yes
   no_log: true
 
 - name: Check if schema tables are already imported
@@ -17,7 +16,6 @@
     login_password: "{{ mysql_admin_password }}"
     login_port: 3306
     login_db: bookstore
-    ssl: yes
     query: "SHOW TABLES LIKE 'Books';"
   register: table_check
   no_log: true
@@ -31,6 +29,5 @@
     name: bookstore
     state: import
     target: /var/www/epicbook/db/schema.sql
-    ssl: yes
   when: table_check.rowcount == 0
   no_log: true
