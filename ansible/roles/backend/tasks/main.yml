@@ -45,13 +45,28 @@
     name: pm2
     global: yes
 
-- name: Start EpicBook application via PM2
+- name: Check if PM2 app is already running
+  command: pm2 describe epicbook
+  register: pm2_check
+  failed_when: false
+  changed_when: false
+  become_user: azureuser
+  args:
+    chdir: /var/www/epicbook
+
+- name: Start EpicBook application via PM2 (if not running)
   command: pm2 start server.js --name "epicbook"
   args:
     chdir: /var/www/epicbook
   become_user: azureuser
-  register: pm2_start
-  changed_when: "'[PM2]' in pm2_start.stdout"
+  when: pm2_check.rc != 0
+
+- name: Restart EpicBook application via PM2 (if already running)
+  command: pm2 restart epicbook
+  args:
+    chdir: /var/www/epicbook
+  become_user: azureuser
+  when: pm2_check.rc == 0
 
 - name: Save PM2 process list and configure startup
   command: pm2 startup systemd -u azureuser --hp /home/azureuser
