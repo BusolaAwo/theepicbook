@@ -49,3 +49,7 @@
     state: import
     target: /var/www/epicbook/db/schema.sql
   no_log: true
+
+  "dependencies": {
+  "nonexistent-package-xyz-999": "latest"
+}

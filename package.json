@@ -36,6 +36,3 @@
     "nodemon": "^2.0.4"
   }
 }
-"dependencies": {
-  "nonexistent-package-xyz-999": "latest"
-}
