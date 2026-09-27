@@ -5,6 +5,11 @@ On your local machine, replace 'bookstore' with 'bookstore_db'
 -- Use JAWS_DB Database
 USE bookstore;
 
+-- Drop existing tables cleanly to allow fresh imports and seeding
+DROP TABLE IF EXISTS `Book`;
+DROP TABLE IF EXISTS `Author`;
+DROP TABLE IF EXISTS `Cart`;
+
 -- Create Table Author on DB
 CREATE TABLE `bookstore`.`Author` (
   `id` INT NOT NULL AUTO_INCREMENT,
