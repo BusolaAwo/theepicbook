@@ -22,10 +22,10 @@
     mode: '0755'
   become: yes
 
-- name: Copy database schema and seed files
+- name: Copy schema file from role files
   copy:
-    src: "{{ playbook_dir }}/../../db/"
-    dest: /var/www/epicbook/db/
+    src: schema.sql
+    dest: /var/www/epicbook/db/schema.sql
   become: yes
 
 - name: Check if schema tables are already imported
