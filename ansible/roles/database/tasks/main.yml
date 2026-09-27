@@ -24,7 +24,7 @@
 
 - name: Copy schema file from role files
   copy:
-    src: schema.sql
+    src: BuyTheBook_Schema.sql
     dest: /var/www/epicbook/db/schema.sql
   become: yes
 
