@@ -35,5 +35,5 @@
     name: bookstore
     state: import
     target: /var/www/epicbook/db/schema.sql
-  when: table_check.rowcount == 0
+  when: table_check.rowcount == 0 or table_check.rowcount is undefined
   no_log: true
