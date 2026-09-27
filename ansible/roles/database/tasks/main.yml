@@ -26,7 +26,7 @@
   register: table_check
   no_log: true
 
-- name: Import database schema and seed data if tables don't exist
+- name: Import database schema and seed data
   mysql_db:
     login_host: "{{ mysql_fqdn }}"
     login_user: "{{ mysql_admin_username }}"
@@ -35,5 +35,4 @@
     name: bookstore
     state: import
     target: /var/www/epicbook/db/schema.sql
-  when: table_check.rowcount == 0 or table_check.rowcount is undefined
   no_log: true
