@@ -5,10 +5,17 @@ On your local machine, replace 'bookstore' with 'bookstore_db'
 -- Use JAWS_DB Database
 USE bookstore;
 
--- Drop existing tables cleanly to allow fresh imports and seeding
+-- Temporarily disable foreign key checks to allow dropping tables smoothly
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Drop existing tables if they exist
+DROP TABLE IF EXISTS `cartbook`;
+DROP TABLE IF EXISTS `Cart`;
 DROP TABLE IF EXISTS `Book`;
 DROP TABLE IF EXISTS `Author`;
-DROP TABLE IF EXISTS `Cart`;
+
+-- Re-enable foreign key checks
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- Create Table Author on DB
 CREATE TABLE `bookstore`.`Author` (
