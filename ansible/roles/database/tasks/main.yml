@@ -15,6 +15,19 @@
     state: present
   no_log: true
 
+- name: Create destination db directory
+  file:
+    path: /var/www/epicbook/db
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Copy database schema and seed files
+  copy:
+    src: "{{ playbook_dir }}/../../db/"
+    dest: /var/www/epicbook/db/
+  become: yes
+
 - name: Check if schema tables are already imported
   mysql_query:
     login_host: "{{ mysql_fqdn }}"
