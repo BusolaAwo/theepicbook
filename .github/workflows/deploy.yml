@@ -26,7 +26,7 @@ jobs:
       - name: Build and Push Backend
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./backend
           file: ./backend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/epicbook-backend:latest
@@ -34,7 +34,7 @@ jobs:
       - name: Build and Push Frontend
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./frontend
           file: ./frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/epicbook-frontend:latest
@@ -42,7 +42,7 @@ jobs:
       - name: Build and Push Proxy
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./proxy
           file: ./proxy/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/epicbook-proxy:latest
